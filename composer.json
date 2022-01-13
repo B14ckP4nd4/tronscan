@@ -1,0 +1,27 @@
+{
+    "name": "blackpanda/tronscan",
+    "description": "Simple tronScan API wrapper",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "BlackPanda\\TronScan\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "BlackPanda",
+            "email": "46260610+B14ckP4nd4@users.noreply.github.com"
+        }
+    ],
+
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BlackPanda\\LaravelTronScan\\TronScanServiceProvider"
+            ]
+        }
+    },
+
+    "require": {}
+}
