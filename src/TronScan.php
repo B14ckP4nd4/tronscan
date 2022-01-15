@@ -4,6 +4,8 @@
 namespace BlackPanda\TronScan;
 
 
+use BlackPanda\TronScan\Parse\TokenBalance;
+use BlackPanda\TronScan\Parse\TRC20Balance;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use function PHPUnit\Framework\isJson;
@@ -40,7 +42,43 @@ class TronScan
     {
         $params = ['address' => $address];
 
-        return $this->request('GET', 'account', $params);
+        /**
+         * get content
+         */
+        $content = $this->request('GET', 'account', $params);
+
+        $TRC20Tokens = $content->trc20token_balances;
+
+        $balance = [];
+        $tokens = [];
+        $tokens['trc20'] = [];
+        $tokens['trc10'] = [];
+
+        dd($content);
+        dd();
+
+        // TRC20 Balance
+        foreach ($content->trc20token_balances as $token){
+            $parse = TokenBalance::parse($token);
+            $balance[] = $parse;
+            $tokens['trc20'][] = $parse;
+        }
+
+        // TRC10 Balance
+        foreach ($content->tokenBalances as $token){
+            $parse = TokenBalance::parse($token);
+            $balance[] = $parse;
+            $tokens['trc10'][] = $parse;
+        }
+
+        unset($content->trc20token_balances);
+        unset($content->tokenBalances);
+//        unset($content->balances);
+
+        $content->balance = $balance;
+        $content->tokens = $tokens;
+
+        return $content;
     }
 
 
@@ -70,7 +108,7 @@ class TronScan
             'end_timestamp' => $end_timestamp ?? null,
         ];
 
-        return $this->request('GET', 'transaction', $params);
+        return  $this->request('GET', 'transaction', $params);;
     }
 
 
@@ -112,6 +150,66 @@ class TronScan
         ];
 
         return $this->request('GET', 'transfer', $params);
+    }
+
+    /**
+     * get tokens list
+     * @param int $start
+     * @param string $order
+     * @param int|null $start_timestamp
+     * @param int|null $end_timestamp
+     * @param string $sort
+     * @param string $filter
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function getTokensList(int $start= 0,string $order = 'desc', int $start_timestamp = null, int $end_timestamp = null,string $sort = 'volume24hInTrx', string $filter='all')
+    {
+        /*
+         * set params
+         */
+        $params = [
+            'start' => $start,
+            'order' => $order,
+            'start_timestamp' => $start_timestamp,
+            'end_timestamp' => $end_timestamp,
+            'sort' => $sort,
+            'filter' => $filter,
+        ];
+
+        return $this->request('GET', 'tokens/overview', $params);
+    }
+
+    /**
+     * get TRC10 tokens list
+     * @param int $start
+     * @param string $order
+     * @param int|null $start_timestamp
+     * @param int|null $end_timestamp
+     * @param string $sort
+     * @param string $filter
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function getTRC10Tokens(int $start= 0,string $order = 'desc', int $start_timestamp = null, int $end_timestamp = null,string $sort = 'volume24hInTrx', string $filter='trc10')
+    {
+        return $this->getTokensList($start , $order, $start_timestamp, $end_timestamp , $sort , $filter);
+    }
+
+    /**
+     * get TRC20 Tokens list
+     * @param int $start
+     * @param string $order
+     * @param int|null $start_timestamp
+     * @param int|null $end_timestamp
+     * @param string $sort
+     * @param string $filter
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function getTRC20Tokens(int $start= 0,string $order = 'desc', int $start_timestamp = null, int $end_timestamp = null,string $sort = 'volume24hInTrx', string $filter='trc20')
+    {
+        return $this->getTokensList($start , $order, $start_timestamp, $end_timestamp , $sort , $filter);
     }
 
     public function getContract(string $contract_address)
