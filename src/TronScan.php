@@ -6,6 +6,7 @@ namespace BlackPanda\TronScan;
 
 use BlackPanda\TronScan\Parse\Account;
 use BlackPanda\TronScan\Parse\TokenBalance;
+use BlackPanda\TronScan\Parse\TransactionsList;
 use BlackPanda\TronScan\Parse\TRC20Balance;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -78,6 +79,7 @@ class TronScan
             'end_timestamp' => $end_timestamp ?? null,
         ];
 
+        return  TransactionsList::parse($this->request('GET', 'transaction', $params));
         return  $this->request('GET', 'transaction', $params);;
     }
 
