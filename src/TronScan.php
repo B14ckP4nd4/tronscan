@@ -80,7 +80,6 @@ class TronScan
         ];
 
         return  TransactionsList::parse($this->request('GET', 'transaction', $params));
-        return  $this->request('GET', 'transaction', $params);;
     }
 
 
@@ -206,6 +205,17 @@ class TronScan
 
         $result = $request->getBody()->getContents();
 
-        return (isJson($result)) ? json_decode($result) : $result;
+        return (isJson($result)) ? \json_decode($result) : $result;
     }
+
+    private function json_decode($json){
+        $result = json_decode($json);
+
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $result;
+        }
+
+        return  $json;
+    }
+
 }
