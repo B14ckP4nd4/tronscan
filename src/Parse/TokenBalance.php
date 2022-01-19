@@ -12,21 +12,26 @@ class TokenBalance implements Parser
 
     public static function parse($givenData)
     {
+
+
         // parse TronBalance
         if($givenData->tokenId == '_'){
             return self::parseTron($givenData);
         }
 
+
+
         if($givenData->tokenType == 'trc10'){
             return self::parseTRC10Token($givenData);
         }
+
+
 
         if($givenData->tokenType == 'trc20'){
             return self::parseTRC20Token($givenData);
         }
 
         throw new \Exception('Wrong data for parsing');
-
     }
 
     public static function parseTRC20Token($givenData){
