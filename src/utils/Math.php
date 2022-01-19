@@ -17,6 +17,10 @@ class Math
         $number = floatval($number);
         $pow = pow(10 , $decimals);
         $div =  fdiv($number , $pow );
+
+        if($div > 1)
+            return $div;
+
         return sprintf('%f',self::floor($div , $decimals));
     }
 
