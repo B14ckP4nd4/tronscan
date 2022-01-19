@@ -4,6 +4,7 @@
 namespace BlackPanda\TronScan;
 
 
+use BlackPanda\TronScan\Parse\Account;
 use BlackPanda\TronScan\Parse\TokenBalance;
 use BlackPanda\TronScan\Parse\TRC20Balance;
 use GuzzleHttp\Client;
@@ -47,38 +48,7 @@ class TronScan
          */
         $content = $this->request('GET', 'account', $params);
 
-        $TRC20Tokens = $content->trc20token_balances;
-
-        $balance = [];
-        $tokens = [];
-        $tokens['trc20'] = [];
-        $tokens['trc10'] = [];
-
-        dd($content);
-        dd();
-
-        // TRC20 Balance
-        foreach ($content->trc20token_balances as $token){
-            $parse = TokenBalance::parse($token);
-            $balance[] = $parse;
-            $tokens['trc20'][] = $parse;
-        }
-
-        // TRC10 Balance
-        foreach ($content->tokenBalances as $token){
-            $parse = TokenBalance::parse($token);
-            $balance[] = $parse;
-            $tokens['trc10'][] = $parse;
-        }
-
-        unset($content->trc20token_balances);
-        unset($content->tokenBalances);
-//        unset($content->balances);
-
-        $content->balance = $balance;
-        $content->tokens = $tokens;
-
-        return $content;
+        return Account::parse($content);
     }
 
 
