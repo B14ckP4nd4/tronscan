@@ -57,7 +57,7 @@ class TransactionsList implements Parser
 
         // unset unnecessary data's
         unset($givenData->data);
-        
+
 
         return $givenData;
     }
@@ -84,13 +84,18 @@ class TransactionsList implements Parser
         $output = new \stdClass();
         $output->hash = $transactionInfo->hash;
         $output->timestamp = $transactionInfo->timestamp;
-        $output->from = $transactionInfo->tokenTransferInfo->from_address;
+        $output->from = $transactionInfo->ownerAddress;
+
         $output->to = $transactionInfo->tokenTransferInfo->to_address;
-        $output->tag = null;
-        $output->note = null;
         $output->coin = $transactionInfo->tokenTransferInfo->name;
         $output->symbol = $transactionInfo->tokenTransferInfo->symbol;
-        $output->amount = Math::toDecimal($transactionInfo->tokenTransferInfo->amount_str , $transactionInfo->tokenTransferInfo->decimals);
+        $output->contract_address = $transactionInfo->tokenTransferInfo->contract_address;
+        $output->amount = Math::toDecimal($transactionInfo->tokenTransferInfo->amount_str, $transactionInfo->tokenTransferInfo->decimals);
+        $output->note = null;
+
+        $output->tag = null;
+
+        $output->tokenType = 'trc20';
         $output->status = $transactionInfo->contractRet;
         $output->confirmed = $transactionInfo->confirmed;
         $output->confirms = $transactionInfo->confirmations;
@@ -103,18 +108,20 @@ class TransactionsList implements Parser
     {
         $output = new \stdClass();
 
-        $output->hash = $transaction->hash ;
-        $output->timestamp = $transaction->ownerAddress ;
-        $output->from = $transaction->ownerAddress ;
-        $output->to = $transaction->toAddress ;
+        $output->hash = $transaction->hash;
+        $output->timestamp = $transaction->ownerAddress;
+        $output->from = $transaction->ownerAddress;
+        $output->to = $transaction->toAddress;
         $output->tag = null;
         $output->note = null;
-        $output->coin = $transaction->tokenInfo->tokenName ;
-        $output->symbol = $transaction->tokenInfo->tokenAbbr ;
-        $output->amount = Math::toDecimal($transaction->amount , $transaction->tokenInfo->tokenDecimal) ;
-        $output->status = $transaction->result ;
-        $output->confirmed = $transaction->confirmed ;
-        $output->confirms = null ;
+        $output->coin = $transaction->tokenInfo->tokenName;
+        $output->symbol = $transaction->tokenInfo->tokenAbbr;
+        $output->tokenType = $transaction->tokenType;
+        $output->tokenId = $transaction->tokenInfo->tokenId;
+        $output->amount = Math::toDecimal($transaction->amount, $transaction->tokenInfo->tokenDecimal);
+        $output->status = $transaction->result;
+        $output->confirmed = $transaction->confirmed;
+        $output->confirms = null;
 
         return $output;
     }
