@@ -43,7 +43,10 @@ class TransactionsList implements Parser
                 $transactionData = (new TransactionsList)->ParseTRC10Transaction($transaction);
             }
 
-            $parsedTransactions[] = $transactionData;
+
+            if ($transactionData)
+                $parsedTransactions[] = $transactionData;
+
         }
 
         /*
