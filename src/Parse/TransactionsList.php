@@ -69,6 +69,18 @@ class TransactionsList implements Parser
          */
         $transactionInfo = \TronScan::getTransaction($transaction->hash);
 
+        /*
+         * ignore shielded transactions
+         */
+        if(isset($transactionInfo->triggerContractType) && $transactionInfo->triggerContractType == 502)
+            return false;
+
+        /*
+         * ignore if the transaction isn't transfer
+         */
+        if(!isset($transactionInfo->tokenTransferInfo))
+            return false;
+
         $output = new \stdClass();
         $output->hash = $transactionInfo->hash;
         $output->timestamp = $transactionInfo->timestamp;
