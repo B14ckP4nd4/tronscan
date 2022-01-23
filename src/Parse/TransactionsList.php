@@ -25,24 +25,22 @@ class TransactionsList implements Parser
         /*
          * parse Data
          */
-        foreach ($givenData->data as $key => $transaction){
+        foreach ($givenData->data as $key => $transaction) {
 
             $transactionData = [];
 
             /*
              * TRC 20 Transaction
              */
-            if($transaction->contractType == 31)
-            {
-                $transactionData = self::ParseTRC20Transaction($transaction);
+            if ($transaction->contractType == 31) {
+                $transactionData = (new TransactionsList)->ParseTRC20Transaction($transaction);
             }
 
             /*
              * TRC10 Transactions
              */
-            if($transaction->contractType == 1)
-            {
-                $transactionData = self::ParseTRC10Transaction($transaction);
+            if (in_array($transaction->contractType, [1, 2])) {
+                $transactionData = (new TransactionsList)->ParseTRC10Transaction($transaction);
             }
 
             $parsedTransactions[] = $transactionData;
