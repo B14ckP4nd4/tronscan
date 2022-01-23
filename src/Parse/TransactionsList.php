@@ -12,6 +12,13 @@ class TransactionsList implements Parser
 
     public static function parse($givenData)
     {
+        if (!$givenData->data) {
+            $givenData->transactionsCount = $givenData->rangeTotal;
+            $givenData->transactions = [];
+            return $givenData;
+        }
+
+
         $transactionsCount = count($givenData->data);
 
         $parsedTransactions = [];
