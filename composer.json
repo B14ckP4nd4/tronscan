@@ -18,10 +18,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "BlackPanda\\LaravelTronScan\\TronScanServiceProvider"
+                "BlackPanda\\TronScan\\TronScanServiceProvider"
             ],
             "aliases": {
-                "tronscan": "BlackPanda\\LaravelTronScan\\TronScanFacade"
+                "tronscan": "BlackPanda\\TronScan\\TronScanFacade"
             }
         }
     },
