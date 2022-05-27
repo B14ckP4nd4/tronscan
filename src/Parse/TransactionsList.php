@@ -12,7 +12,10 @@ class TransactionsList implements Parser
 
     public static function parse($givenData)
     {
-        if (!$givenData && $givenData->data) {
+        if($givenData->message)
+            throw new \Exception($givenData->message);
+
+        if (!$givenData->data) {
             $givenData->transactionsCount = $givenData->rangeTotal;
             $givenData->transactions = [];
             return $givenData;
