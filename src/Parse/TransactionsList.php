@@ -12,10 +12,10 @@ class TransactionsList implements Parser
 
     public static function parse($givenData)
     {
-        if($givenData->message)
+        if(property_exists($givenData, 'message'))
             throw new \Exception($givenData->message);
 
-        if (!$givenData->data) {
+        if (!property_exists($givenData, 'data')) {
             $givenData->transactionsCount = $givenData->rangeTotal;
             $givenData->transactions = [];
             return $givenData;
