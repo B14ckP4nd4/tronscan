@@ -1,7 +1,7 @@
 {
     "name": "blackpanda/tronscan",
     "description": "Simple tronScan API wrapper",
-    "type": "project",
+    "type": "package",
     "license": "MIT",
     "autoload": {
         "psr-4": {
