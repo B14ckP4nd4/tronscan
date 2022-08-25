@@ -112,7 +112,7 @@ class TransactionsList implements Parser
         $output = new \stdClass();
 
         $output->hash = $transaction->hash;
-        $output->timestamp = $transaction->ownerAddress;
+        $output->timestamp = $transaction->timestamp;
         $output->from = $transaction->ownerAddress;
         $output->to = $transaction->toAddress;
         $output->tag = null;
