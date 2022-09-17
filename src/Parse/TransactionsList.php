@@ -78,7 +78,7 @@ class TransactionsList implements Parser
             $transactionInfo = \TronScan::getTransaction($transaction->hash);
         }
         else{
-            $tronScan->getTransaction($transaction->hash)
+            $tronScan->getTransaction($transaction->hash);
         }
 
         /*
