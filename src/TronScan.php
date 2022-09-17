@@ -235,7 +235,7 @@ class TronScan
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $url = $this->api_url . http_build_query($queries);
+        $url = $this->api_url .$endpoint.'?'. http_build_query($queries);
         Log::info("Url is: ".$url);
         curl_setopt($ch, CURLOPT_URL, $url);
         // Time OUT
