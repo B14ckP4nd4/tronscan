@@ -29,6 +29,6 @@
     "require": {
         "spatie/guzzle-rate-limiter-middleware": "^2.0",
       "ext-curl": "*",
-        "illuminate/support": "^9.30"
+        "illuminate/support": "v8.83.16"
     }
 }
