@@ -241,7 +241,7 @@ class TronScan
         // Turn off the server and peer verification (TrustManager Concept).
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 100);
         // UserAgent
         curl_setopt($ch, CURLOPT_USERAGENT, 'TronScan API');
         // Cookies
