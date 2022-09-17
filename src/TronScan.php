@@ -235,7 +235,9 @@ class TronScan
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        curl_setopt($ch, CURLOPT_URL, $this->api_url . http_build_query($queries));
+        $url = $this->api_url . http_build_query($queries);
+        Log::info("Url is: ".$url);
+        curl_setopt($ch, CURLOPT_URL, $url);
         // Time OUT
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
         // Turn off the server and peer verification (TrustManager Concept).
