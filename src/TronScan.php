@@ -216,60 +216,13 @@ class TronScan
      */
     private function request(string $method, string $endpoint, array $queries = [])
     {
-//        $request = $this->api->request($method, $endpoint, [
-//            'query' => $queries,
-//        ]);
-//
-//        $result = $request->getBody()->getContents();
-//
-//        return (isJson($result)) ? \json_decode($result) : $result;
+        $request = $this->api->request($method, $endpoint, [
+            'query' => $queries,
+        ]);
 
-        $ch = curl_init();
+        $result = $request->getBody()->getContents();
 
-        $headers = [
-                'Accept: application/json',
-                'Content-Type: application/json',
-                'Connection: keep-alive',
-                'Accept-Encoding: gzip, deflate, br',
-                'User-Agent: Mozilla/5.0 (X11; U; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/103.0.5154.180 Chrome/103.0.5154.180 Safari/537.36',
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        $url = $this->api_url .$endpoint.'?'. http_build_query($queries);
-        Log::info("Url is: ".$url);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        // Time OUT
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-        // Turn off the server and peer verification (TrustManager Concept).
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 100);
-        // UserAgent
-        curl_setopt($ch, CURLOPT_USERAGENT, 'TronScan API');
-        // Cookies
-        if (!empty($cookies)) {
-            curl_setopt($ch, CURLOPT_COOKIESESSION, true);
-            curl_setopt($ch, CURLOPT_COOKIE, http_build_query($cookies, '', '; '));
-        }
-        // Params
-        if (!empty($params)) {
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-        }
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        // Get Response
-        $response = curl_exec($ch);
-
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        if ($http_code != 200) {
-            throw new \Exception("There is a problem to get results. curl Status code {$http_code}");
-        }
-        curl_close($ch);
-
-        return (isJson($response)) ? \json_decode($response) : $response;
+        return (isJson($result)) ? \json_decode($result) : $result;
     }
 
     private function json_decode($json){
