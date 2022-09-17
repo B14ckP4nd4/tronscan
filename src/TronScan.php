@@ -23,14 +23,22 @@ class TronScan
 
     private $api;
 
-    public function __construct(int $ratelimit = 20)
+    public function __construct(int $rateLimit = 20)
     {
         $myApi = HandlerStack::create();
-        $myApi->push(RateLimiterMiddleware::perMinute($ratelimit));
+        $myApi->push(RateLimiterMiddleware::perMinute($rateLimit));
         $this->api = new Client(
             [
                 'base_uri' => $this->api_url,
                 'handler' => $myApi,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Connection' => 'keep-alive',
+                    'Accept-Encoding' => 'gzip, deflate, br',
+                    'User-Agent' => 'Mozilla/5.0 (X11; U; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/103.0.5154.180 Chrome/103.0.5154.180 Safari/537.36',
+
+                ],
             ]
         );
     }
@@ -210,9 +218,6 @@ class TronScan
     {
         $request = $this->api->request($method, $endpoint, [
             'query' => $queries,
-            'headers' => [
-                'User-Agent' => 'Mozilla/5.0 (X11; U; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/103.0.5154.180 Chrome/103.0.5154.180 Safari/537.36',
-            ]
         ]);
 
         $result = $request->getBody()->getContents();
