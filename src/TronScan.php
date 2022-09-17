@@ -11,6 +11,7 @@ use BlackPanda\TronScan\Parse\TRC20Balance;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
+use Illuminate\Support\Facades\Log;
 use Spatie\GuzzleRateLimiterMiddleware\RateLimiterMiddleware;
 use function PHPUnit\Framework\isJson;
 
@@ -37,7 +38,6 @@ class TronScan
                     'Connection' => 'keep-alive',
                     'Accept-Encoding' => 'gzip, deflate, br',
                     'User-Agent' => 'Mozilla/5.0 (X11; U; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/103.0.5154.180 Chrome/103.0.5154.180 Safari/537.36',
-
                 ],
             ]
         );
@@ -216,13 +216,58 @@ class TronScan
      */
     private function request(string $method, string $endpoint, array $queries = [])
     {
-        $request = $this->api->request($method, $endpoint, [
-            'query' => $queries,
-        ]);
+//        $request = $this->api->request($method, $endpoint, [
+//            'query' => $queries,
+//        ]);
+//
+//        $result = $request->getBody()->getContents();
+//
+//        return (isJson($result)) ? \json_decode($result) : $result;
 
-        $result = $request->getBody()->getContents();
+        $ch = curl_init();
 
-        return (isJson($result)) ? \json_decode($result) : $result;
+        $headers = [
+                'Accept: application/json',
+                'Content-Type: application/json',
+                'Connection: keep-alive',
+                'Accept-Encoding: gzip, deflate, br',
+                'User-Agent: Mozilla/5.0 (X11; U; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/103.0.5154.180 Chrome/103.0.5154.180 Safari/537.36',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        curl_setopt($ch, CURLOPT_URL, $this->api_url . http_build_query($queries));
+        // Time OUT
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+        // Turn off the server and peer verification (TrustManager Concept).
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout);
+        // UserAgent
+        curl_setopt($ch, CURLOPT_USERAGENT, 'TronScan API');
+        // Cookies
+        if (!empty($cookies)) {
+            curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+            curl_setopt($ch, CURLOPT_COOKIE, http_build_query($cookies, '', '; '));
+        }
+        // Params
+        if (!empty($params)) {
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+        }
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        // Get Response
+        $response = curl_exec($ch);
+
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if ($http_code != 200) {
+            throw new \Exception("There is a problem to get results. curl Status code {$http_code}");
+        }
+        curl_close($ch);
+
+        return (isJson($response)) ? \json_decode($response) : $response;
     }
 
     private function json_decode($json){
