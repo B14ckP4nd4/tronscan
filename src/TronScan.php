@@ -10,6 +10,8 @@ use BlackPanda\TronScan\Parse\TransactionsList;
 use BlackPanda\TronScan\Parse\TRC20Balance;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\HandlerStack;
+use Spatie\GuzzleRateLimiterMiddleware\RateLimiterMiddleware;
 use function PHPUnit\Framework\isJson;
 
 class TronScan
@@ -21,9 +23,16 @@ class TronScan
 
     private $api;
 
-    public function __construct()
+    public function __construct(int $ratelimit = 20)
     {
-        $this->api = new Client(['base_uri' => $this->api_url]);
+        $myApi = HandlerStack::create();
+        $myApi->push(RateLimiterMiddleware::perMinute($ratelimit));
+        $this->api = new Client(
+            [
+                'base_uri' => $this->api_url,
+                'handler' => $myApi,
+            ]
+        );
     }
 
     /**

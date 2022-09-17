@@ -5,6 +5,7 @@ namespace BlackPanda\TronScan\Parse;
 
 
 use BlackPanda\TronScan\Contracts\Parser;
+use BlackPanda\TronScan\TronScan;
 use BlackPanda\TronScan\utils\Math;
 
 class TransactionsList implements Parser
@@ -12,6 +13,9 @@ class TransactionsList implements Parser
 
     public static function parse($givenData)
     {
+        // rate Limited TronScan
+        $tronScan = new TronScan(20);
+
         if(property_exists($givenData, 'message'))
             throw new \Exception($givenData->message);
 
@@ -36,7 +40,7 @@ class TransactionsList implements Parser
              * TRC 20 Transaction
              */
             if ($transaction->contractType == 31) {
-                $transactionData = (new TransactionsList)->ParseTRC20Transaction($transaction);
+                $transactionData = (new TransactionsList)->ParseTRC20Transaction($transaction,$tronScan);
             }
 
             /*
@@ -65,12 +69,17 @@ class TransactionsList implements Parser
         return $givenData;
     }
 
-    public static function ParseTRC20Transaction($transaction)
+    public static function ParseTRC20Transaction($transaction,TronScan $tronScan = null)
     {
         /*
          * get complete information of transaction
          */
-        $transactionInfo = \TronScan::getTransaction($transaction->hash);
+        if(is_null($tronScan)){
+            $transactionInfo = \TronScan::getTransaction($transaction->hash);
+        }
+        else{
+            $tronScan->getTransaction($transaction->hash)
+        }
 
         /*
          * ignore shielded transactions

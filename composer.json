@@ -26,5 +26,7 @@
         }
     },
 
-    "require": {}
+    "require": {
+        "spatie/guzzle-rate-limiter-middleware": "^2.0"
+    }
 }
