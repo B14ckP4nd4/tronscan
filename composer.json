@@ -28,6 +28,6 @@
 
     "require": {
         "spatie/guzzle-rate-limiter-middleware": "^2.0",
-      "ext-curl": "*",
+      "ext-curl": "*"
     }
 }
